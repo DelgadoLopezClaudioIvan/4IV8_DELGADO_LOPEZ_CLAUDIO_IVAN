@@ -15,7 +15,7 @@ public class ExamenPrimerParcial {
 
         while (continuar) {
 
-            // MENÚ PRINCIPAL
+
             System.out.println("\n=== MENÚ PRINCIPAL ===");
             System.out.println("1. Nueva cotización");
             System.out.println("2. Salir");
@@ -43,7 +43,6 @@ public class ExamenPrimerParcial {
                 break;
             }
 
-            // VALIDACIÓN DEL NOMBRE
             String nombre;
             while (true) {
                 System.out.print("Ingrese el nombre completo del comprador: ");
@@ -67,13 +66,12 @@ public class ExamenPrimerParcial {
                 break;
             }
 
-            // MEDIDAS
-            double ancho = pedirNumero(sc, "Ingrese el ancho del piso (mayor a 1): ");
-            double largo = pedirNumero(sc, "Ingrese el largo del piso (mayor a 1): ");
+
+            double ancho = pedirNumero(sc, "Ingrese el ancho del piso (mayor a 1) solo numeros: ");
+            double largo = pedirNumero(sc, "Ingrese el largo del piso (mayor a 1) solo numeros: ");
 
             double metrosCuadrados = ancho * largo;
 
-            // TIPO DE PISO
             System.out.println("\nSeleccione el tipo de piso:");
             System.out.println("1. Laminado ($13.45 m²)");
             System.out.println("2. Marmolado ($43.95 m²)");
@@ -104,14 +102,14 @@ public class ExamenPrimerParcial {
                 }
             }
 
-            // CÁLCULOS
+
             double subtotal = metrosCuadrados * precioSeleccionado;
             double descuentoAplicado = subtotal * DESCUENTO;
             double subtotalConDescuento = subtotal - descuentoAplicado;
             double impuestos = subtotalConDescuento * IVA;
             double total = subtotalConDescuento + impuestos;
 
-            // CONFIRMAR COMPRA
+
             System.out.println("\n¿Desea aceptar la compra?");
             System.out.println("1. Sí");
             System.out.println("2. No");
@@ -137,7 +135,7 @@ public class ExamenPrimerParcial {
                 continue;
             }
 
-            // RESULTADOS FINALES (FORMATEADOS A 3 DECIMALES)
+
             System.out.println("\n=== COMPRA ACEPTADA ===");
             System.out.println("Comprador: " + nombre);
             System.out.println("Área total: " + String.format("%.3f", metrosCuadrados) + " m²");
@@ -153,10 +151,10 @@ public class ExamenPrimerParcial {
         sc.close();
     }
 
-    // MÉTODO PARA VALIDAR NÚMEROS MAYORES A 1 (ENTEROS O DECIMALES)
+
     public static double pedirNumero(Scanner sc, String mensaje) {
     double valor = 0;
-    double LIMITE_MAXIMO = 10000.0; // Define aquí el límite que desees
+    double LIMITE_MAXIMO = 10000.0;
 
     while (true) {
         try {
@@ -168,10 +166,6 @@ public class ExamenPrimerParcial {
                 continue;
             }
 
-            // Regex explicada:
-            // ^[0-9]+      -> Empieza con uno o más números
-            // (\\.[0-9]{2,3})? -> Opcionalmente un punto seguido de EXACTAMENTE 2 o 3 números
-            // $            -> Fin de la cadena
             if (!entrada.matches("^[0-9]+(\\.[0-9]{1,3})?$")) {
                 System.out.println("Error: Ingrese un número con 2 o 3 decimales (ej: 10.50 o 10.505).");
                 continue;
@@ -179,13 +173,11 @@ public class ExamenPrimerParcial {
 
             valor = Double.parseDouble(entrada);
 
-            // Validación de rango
             if (valor <= 1) {
                 System.out.println("El valor debe ser mayor a 1.");
             } else if (valor > LIMITE_MAXIMO) {
                 System.out.println("El monto excede el límite de compra permitido ($" + LIMITE_MAXIMO + ").");
             } else {
-                // Si pasa todas las validaciones, salimos del bucle
                 break;
             }
 
