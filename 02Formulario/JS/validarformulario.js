@@ -29,5 +29,34 @@ function validar(formulario){
         formulario.nombre.focus();
         return false;
     }
-        return true;
+
+    var abc0k = "1234567890";
+    var checkString = formulario.edad.value;
+    var allValid = true;
+
+    //tenemos que ir comparando y recorriendo la cadena caracter por caracter
+    for(var i = 0; i < checkString.length; i++){
+        //necesito la cadena pasarla a caracter
+        var caracters = checkString.charAt(i);
+        for(var j = 0; j < abc0k.length; j++){
+            if(caracters == abc0k.charAt(j)){
+                break;
+            }
+        }
+        if(j == abc0k.length){
+            allValid = false;
+            break;
+        }
+    }
+    if(!allValid){
+        alert("Por favor, escriba unicamente numeros en el campo edad");
+        formulario.edad.focus();
+        return false;
+    }
+
+    var correoelectronico = /^[^@\s]+[^@\.\s]+(\.[^@\.\s]+)+$/;
+
+    var txt = formulario.email.value;
+
+    alert("Email "+ (correoelectronico.test(txt)?" ":" no " ) + "Valido" );
 }
