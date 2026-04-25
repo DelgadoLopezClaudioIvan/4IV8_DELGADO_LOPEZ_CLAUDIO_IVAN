@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problemas de Algoritmos</title>
+    <link rel="stylesheet" href="/Problemas I en java script/CSS/Style.css">
+    <script src="./JS/script.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Ejercicios de Algoritmos</h1>
+
+        <div class="card">
+            <h2>1. Suponga que un individuo desea invertir su capital en un banco y desea saber cuanto dinero ganara después de un mes si el banco paga a razón de 2% mensual.</h2>
+            <label>Capital a invertir:</label>
+            <input type="number" id="cap1" placeholder="$">
+            <button onclick="ejercicio1()">Calcular</button>
+            <div id="res1" class="resultado-caja"></div>
+        </div>
+
+        <div class="card">
+            <h2>2. Un vendedor recibe un sueldo base mas un 10% extra por comisión de sus ventas, el vendedor desea saber cuanto dinero obtendrá por concepto de comisiones por las tres ventas que realiza en el mes y el total que recibirá en el mes tomando en cuenta su sueldo base y comisiones.</h2>
+            <label>Sueldo Base:</label>
+            <input type="number" id="s_base" placeholder="$">
+            <label>Monto de 3 ventas:</label>
+            <input type="number" id="v1" placeholder="Venta 1">
+            <input type="number" id="v2" placeholder="Venta 2">
+            <input type="number" id="v3" placeholder="Venta 3">
+            <button onclick="ejercicio2()">Calcular Sueldo Final</button>
+            <div id="res2" class="resultado-caja"></div>
+        </div>
+
+        <div class="card">
+            <h2>3. Una tienda ofrece un descuento del 15% sobre el total de la compra y un cliente desea saber cuanto deberá pagar finalmente por su compra.</h2>
+            <label>Total de la compra:</label>
+            <input type="number" id="total_compra" placeholder="$">
+            <button onclick="ejercicio3()">Aplicar Descuento</button>
+            <div id="res3" class="resultado-caja"></div>
+        </div>
+
+        <div class="card">
+            <h2>4. Un alumno desea saber cual será su calificación final en la materia de Algoritmos. Dicha calificación se compone de los siguientes porcentajes:</h2>
+            <h3>55% del promedio de sus tres calificaciones parciales.</h3>
+            <h3>30% de la calificación del examen final.</h3>
+            <h3>15% de la calificación de un trabajo final.</h3>
+            <label>Promedio de 3 parciales:</label>
+            <input type="number" id="prom_parcial" placeholder="0-100">
+            <label>Examen Final:</label>
+            <input type="number" id="ex_final" placeholder="0-100">
+            <label>Trabajo Final:</label>
+            <input type="number" id="trab_final" placeholder="0-100">
+            <button onclick="ejercicio4()">Calcular Nota</button>
+            <div id="res4" class="resultado-caja"></div>
+        </div>
+
+        <div class="card">
+            <h2>5. Un maestro desea saber que porcentaje de hombres y que porcentaje de mujeres hay en un grupo de estudiantes.</h2>
+            <label>Cantidad de Hombres:</label>
+            <input type="number" id="cant_h" placeholder="Ej: 10">
+            <label>Cantidad de Mujeres:</label>
+            <input type="number" id="cant_m" placeholder="Ej: 15">
+            <button onclick="ejercicio5()">Calcular %</button>
+            <div id="res5" class="resultado-caja"></div>
+        </div>
+
+        <div class="card">
+    <h2>6. Cálculo de Edad Exacta</h2>
+    <label>Fecha de Nacimiento:</label>
+    <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+        <select id="dia_nac" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ddd;"></select>
+        <select id="mes_nac" style="flex: 2; padding: 10px; border-radius: 6px; border: 1px solid #ddd;">
+            <option value="0">Enero</option> <option value="1">Febrero</option>
+            <option value="2">Marzo</option> <option value="3">Abril</option>
+            <option value="4">Mayo</option> <option value="5">Junio</option>
+            <option value="6">Julio</option> <option value="7">Agosto</option>
+            <option value="8">Septiembre</option> <option value="9">Octubre</option>
+            <option value="10">Noviembre</option> <option value="11">Diciembre</option>
+        </select>
+        <select id="anio_nac_select" style="flex: 1.5; padding: 10px; border-radius: 6px; border: 1px solid #ddd;"></select>
+    </div>
+    <button onclick="ejercicio6()">Calcular Edad Actual</button>
+    <div id="res6" class="resultado-caja"></div>
+</div>
+    </div>
+</body>
+</html>
