@@ -11,7 +11,7 @@ html, body {
 
 }
 
-.container-main{
+div{
     border: 7px solid rgba(10, 16, 13, 1);
     border-radius: 50px;
     margin: 2rem;

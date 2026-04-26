@@ -1,4 +1,4 @@
-// ---------------- PROBLEMA 1 ----------------
+
 function problema1() {
     let texto = document.querySelector("#p1-input").value.trim();
 
@@ -14,9 +14,6 @@ function problema1() {
     document.querySelector("#p1-output").textContent = invertidas;
 }
 
-
-
-// ---------------- PROBLEMA 2 ----------------
 function problema2() {
 
     // obtener valores numéricos
@@ -58,7 +55,6 @@ function problema2() {
 
 
 
-// ---------------- PROBLEMA 3 ----------------
 function problema3() {
     let texto = document.querySelector("#p3-input").value.trim();
 

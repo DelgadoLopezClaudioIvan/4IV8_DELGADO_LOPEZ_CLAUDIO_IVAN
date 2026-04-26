@@ -1,6 +1,6 @@
 
     body { 
-        font-family: 'Segoe UI', sans-serif; 
+        font-family: Winky Milky; 
         background-color: rgba(185, 186, 163, 1); 
         padding: 20px; 
         display: flex; 
@@ -16,9 +16,7 @@
         background: rgba(214, 213, 201, 1); 
         padding: 20px; 
         border-radius: 12px; 
-        box-shadow: 0 4px 15px rgba(0, 53, 81, 1); 
-        margin-bottom: 25px; 
-        border-top: 5px solid rgba(0, 53, 81, 1); 
+        margin-bottom: 25px;     
     }
 
     h2,h3 { 
@@ -27,19 +25,12 @@
             margin-top: 0; 
             margin-bottom: 15px; 
     }
-    
-    label { 
-            font-size: 0.9rem; 
-            color: rgba(0, 53, 81, 1); 
-            display: block; 
-            margin-bottom: 5px; 
-    }
+
 
     input { 
             width: 95%; 
             padding: 10px;
             margin-bottom: 15px; 
-            border: 1px solid rgba(120, 0, 0, 1); 
             border-radius: 6px; 
             font-size: 1rem; 
     }
@@ -53,7 +44,6 @@
         border-radius: 6px; 
         cursor: pointer; 
         font-weight: bold; 
-        transition: 0.3s; 
     
     }
     button:hover { 
@@ -64,11 +54,9 @@
             margin-top: 15px; 
             padding: 15px; 
             background-color: #e8f0fe; 
-            border-left: 5px solid rgba(102, 155, 188, 1); 
             border-radius: 4px;
             display: none; 
             color: #202124;
-            font-size: 0.95rem;
             line-height: 1.6;
         }
     b { 
