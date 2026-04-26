@@ -54,7 +54,8 @@ function validar(formulario){
         return false;
     }
 
-    var correoelectronico = /^[^@\s]+[^@\.\s]+(\.[^@\.\s]+)+$/;
+    var correoelectronico = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 
     var txt = formulario.email.value;
 
