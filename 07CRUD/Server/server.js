@@ -100,3 +100,26 @@ function enviarJSON(res, statusCode, data){
     res.writeHead(statusCode, {'Content-Type' : 'application/JSON; charset=utf-8'});
     res.end(JSON.stringify(data));
 }
+
+
+
+
+const server = http.createServer(async (req, res) => {
+	
+	const parseUrl = url.parse(req.url, true);
+	const pathname = parseUrl.pathname;
+	const method = req.method;
+
+	console.log('[${new Date().toLocaleTimeString()}] ${method} ${pathname}');
+
+	servirArchivoEstatico(req, res);
+
+});
+
+
+
+
+server.listen(PORT, () => {
+    console.log('Servidor inicializado en el puerto: ' + PORT);
+    console.log('Para salir presiona Crtl + C ');
+})
