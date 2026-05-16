@@ -17,7 +17,7 @@ const notificacionDiv = document.getElementById('notificacion');
 //elementos para errores
 const errorNombre = document.getElementById('error-nombre');
 const errorFecha = document.getElementById('error-fecha');
-const errorNota = Document-getElementById('error-nota');
+const errorNota = document-getElementById('error-nota');
 
 //vamos a crear una API, para poder atender las peticiones por parte del cliente  hacia el servidor
 const API_URL = '/api/usuarios';
