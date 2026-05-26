@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRUDMVC</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
@@ -51,7 +52,26 @@
                 <button type="button" id="btn-cancelar-usuario" class="btn-secundario" style="display:none;" >Cancelar</button>
             </div>
         </section>
+
+        <section class="tabla-section">
+            <h2>Usuarios <span id="contador-usuarios" class="badge badge-neutra"></span></h2>
+            <p id="cargar-usuarios">Cargando ...</p>
+            <table id="tabla-usuarios" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+            </table>
+        </section>
+
+
+
     </div>
+    <script src="./js/app.js"></script>
     
 </body>
 </html>
