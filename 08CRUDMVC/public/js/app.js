@@ -61,7 +61,7 @@ function mostrarNotificacion(mensaje, tipo) {
     notificacionDiv.textContent = mensaje;
     notificacionDiv.className = `notificacion ${tipo}`;
     notificacionDiv.style.display = 'block';
-    setTimeout(() => { notificacionDiv.style.display = 'none'; }, 3000);
+    setTimeout(() => { notificacionDiv.style.display = 'none'; }, 5500);
 }
 
 function escapeHtml(texto) {
