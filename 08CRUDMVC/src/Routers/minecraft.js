@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/db'); // Ajusta la ruta a tu conexión si es necesario
+// CAMBIO 1: Ajusta la ruta para salir de src y entrar a DB
+const db = require('../DB/database'); 
 
-// 1. LISTAR ÍTEMS (GET /api/minecraft)
+// 1. LISTAR ÍTEMS
 router.get('/', async (req, res, next) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM minecraft ORDER BY id DESC');
-        // Enviamos la estructura exacta que espera app.js (resp.data y resp.count)
+        // CAMBIO 2: Cambiar pool.query por db.execute
+        const [rows] = await db.execute('SELECT * FROM minecraft ORDER BY id DESC');
         res.json({
             status: 'success',
             data: rows,
@@ -17,11 +18,11 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// 2. OBTENER UN ÍTEM POR ID (GET /api/minecraft/:id)
+// 2. OBTENER UN ÍTEM POR ID
 router.get('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const [rows] = await pool.query('SELECT * FROM minecraft WHERE id = ?', [id]);
+        const [rows] = await db.execute('SELECT * FROM minecraft WHERE id = ?', [id]);
         
         if (rows.length === 0) {
             return res.status(404).json({ status: 'error', message: 'Ítem no encontrado' });
@@ -36,7 +37,7 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-// 3. CREAR ÍTEM (POST /api/minecraft)
+// 3. CREAR ÍTEM
 router.post('/', async (req, res, next) => {
     try {
         const { nombre, categoria, minecraft_id, tipo_item, descripcion, foto_url } = req.body;
@@ -52,7 +53,7 @@ router.post('/', async (req, res, next) => {
             INSERT INTO minecraft (nombre, categoria, minecraft_id, tipo_item, descripcion, foto_url) 
             VALUES (?, ?, ?, ?, ?, ?)
         `;
-        const [result] = await pool.query(query, [nombre, categoria, minecraft_id, tipo_item, descripcion || null, foto_url || null]);
+        const [result] = await db.execute(query, [nombre, categoria, minecraft_id, tipo_item, descripcion || null, foto_url || null]);
 
         res.status(201).json({
             status: 'success',
@@ -64,7 +65,7 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-// 4. ACTUALIZAR ÍTEM (PUT /api/minecraft/:id)
+// 4. ACTUALIZAR ÍTEM
 router.put('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -73,7 +74,6 @@ router.put('/:id', async (req, res, next) => {
         let query;
         let params;
 
-        // Si en app.js no viene foto_url (porque no se seleccionó archivo nuevo), conservamos la actual
         if (foto_url !== undefined) {
             query = `
                 UPDATE minecraft 
@@ -90,7 +90,7 @@ router.put('/:id', async (req, res, next) => {
             params = [nombre, categoria, minecraft_id, tipo_item, descripcion, id];
         }
 
-        await pool.query(query, params);
+        await db.execute(query, params);
 
         res.json({
             status: 'success',
@@ -101,11 +101,11 @@ router.put('/:id', async (req, res, next) => {
     }
 });
 
-// 5. ELIMINAR ÍTEM (DELETE /api/minecraft/:id)
+// 5. ELIMINAR ÍTEM
 router.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        await pool.query('DELETE FROM minecraft WHERE id = ?', [id]);
+        await db.execute('DELETE FROM minecraft WHERE id = ?', [id]);
         res.json({
             status: 'success',
             message: 'Ítem eliminado correctamente'
