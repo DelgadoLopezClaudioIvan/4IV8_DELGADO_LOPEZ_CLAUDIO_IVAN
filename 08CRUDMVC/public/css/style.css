@@ -223,7 +223,8 @@ button {
 
 #btn-guardar-usuario,
 #btn-guardar-producto,
-#btn-registrar-compra {
+#btn-registrar-compra,
+#btn-guardar-minecraft {
     background-color: var(--color-primario);
     color: white;
 }

@@ -11,6 +11,10 @@ const PORT = process.env.PORT || 3000;
 // el cual para cada peticion que pasa por la ruta de la vista, obtiene una petición y la envia a un controlador
 app.use(cors());
 
+// NUEVOS MIDDLEWARES: Necesarios para poder leer el cuerpo (body) de las peticiones POST y PUT
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
+
 // Middleware para registrar las peticiones entrantes por consola en tiempo real
 app.use((req, res, next) => {
     console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url}`);

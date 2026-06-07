@@ -594,7 +594,7 @@ async function eliminarCompra(id) {
 }
 
 // ============================================================
-// 5. MÓDULO DE MINECRAFT (VERSION POR LINKS DE INTERNET)
+// 5. MÓDULO DE MINECRAFT
 // ============================================================
 const formMinecraft = document.getElementById('form-minecraft');
 const inputMinecraftIdDb = document.getElementById('minecraft-id-db');
@@ -731,10 +731,15 @@ if (formMinecraft) {
         if (!validarFormMinecraft()) return;
 
         const id = inputMinecraftIdDb.value;
+        
         const datos = {
             nombre: inputMinecraftNombre.value.trim(),
             categoria: selectMinecraftCategoria.value,
+            
+            // Enviamos ambos nombres para asegurar que el backend reciba el correcto
             minecraft_id: inputMinecraftInGameId.value.trim(),
+            minecraft_id_ingame: inputMinecraftInGameId.value.trim(),
+            
             tipo_item: selectMinecraftTipoItem.value,
             descripcion: inputMinecraftDescripcion.value.trim() || null,
             foto_url: inputMinecraftFotoUrl ? inputMinecraftFotoUrl.value.trim() || null : null
@@ -754,7 +759,7 @@ if (formMinecraft) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
                 });
-                mostrarNotificacion('Ítem agregado al catálogo', 'exito');
+                mostrarNotificacion('Ítem creado correctamente', 'exito');
             }
             limpiarFormMinecraft();
             cargarMinecraft();
