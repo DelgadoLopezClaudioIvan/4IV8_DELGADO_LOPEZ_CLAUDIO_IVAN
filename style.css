@@ -1,33 +1,117 @@
-*{
-    padding: 0;
-    margin: 0;
-    color: rgba(214, 213, 201, 1);
-    text-align: center;
-    font-family: Winky Milky;
-}
+:root {
+            --bg-principal: rgba(214, 213, 201, 1);
+            --tarjeta-bg: rgba(185, 186, 163, 1);
+            --borde-oscuro: rgba(10, 16, 13, 1);
+            --azul-detalles: rgba(102, 155, 188, 1);
+            --texto-claro: #fff;
+            --texto-oscuro: rgba(10, 16, 13, 1);
+        }
 
-html, body {
-    background-color: rgba(214, 213, 201, 1);
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Winky Milky', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
 
-}
+        html, body {
+            background-color: var(--bg-principal);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
 
-div{
-    border: 7px solid rgba(10, 16, 13, 1);
-    border-radius: 50px;
-    margin: 2rem;
-    background-color: rgba(185, 186, 163, 1);
-}
+        .portafolio-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 7px solid var(--borde-oscuro);
+            border-radius: 40px;
+            background-color: var(--tarjeta-bg);
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
 
-nav, section, footer, aside, article{
-    border: 4px solid rgba(102, 155, 188, 1);
-    margin: 1rem;
-    border-radius: 10px;
-    padding: 1rem;
+        .perfil-seccion {
+            margin-bottom: 2.5rem;
+        }
 
-}
+        .foto-link {
+            display: inline-block;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
 
-article, aside{
-    width: 40%;
-    display: inline-flex;
-    height: 300px;
-}
+        .foto-link:hover {
+            transform: scale(1.05); /* Efecto de rebote sutil al pasar el mouse */
+        }
+
+        .avatar-circular {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid var(--borde-oscuro);
+            object-fit: cover;
+            background-color: var(--bg-principal);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .nombre-alumno {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--borde-oscuro);
+            margin-top: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .saludo {
+            font-size: 1.1rem;
+            color: #55584b;
+            font-style: italic;
+        }
+
+        .titulo-lista {
+            font-size: 1.3rem;
+            color: var(--borde-oscuro);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px dashed var(--borde-oscuro);
+            padding-bottom: 0.5rem;
+        }
+
+        .lista-practicas {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            padding: 0.5rem;
+        }
+
+        .lista-practicas li {
+            background-color: var(--bg-principal);
+            border: 3px solid var(--azul-detalles);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .lista-practicas li:hover {
+            background-color: var(--azul-detalles);
+            border-color: var(--borde-oscuro);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .lista-practicas a {
+            display: block;
+            padding: 1rem;
+            text-decoration: none;
+            color: var(--texto-oscuro);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+        }
+
+        .lista-practicas li:hover a {
+            color: var(--texto-claro);
+        }
