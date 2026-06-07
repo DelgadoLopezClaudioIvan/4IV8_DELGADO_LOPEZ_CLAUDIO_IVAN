@@ -3,49 +3,43 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-//servidor para iniciarlizar con express
+// Servidor para inicializar con express
 
 const PORT = process.env.PORT || 3000;
 
-//para poder aplicar el MVC necesitamos un intermediario que se va a encargar de ser un mesero (middleware), el cual para cada peticion que pasa por la ruta de la vista, obtiene una petición y la envia a un controlador
-
+// Para poder aplicar el MVC necesitamos un intermediario que se va a encargar de ser un mesero (middleware), 
+// el cual para cada peticion que pasa por la ruta de la vista, obtiene una petición y la envia a un controlador
 app.use(cors());
 
-//las peticiones las debemos de atender en un formato JSON, lo que permite poder detectar los elementos bajo los criterios clave, valor
+// MODIFICACIÓN AQUÍ: Aumentamos el límite de tamaño para aceptar las imágenes en Base64 de Minecraft sin dar error 413 (Payload Too Large)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-app.use(express.json());
-
-//que se debe de tener una ruta personalizada por cada tipo de petición next es la ruta a la cual se va atender el tipo de petión o de respuesta
-
+// Middleware para registrar las peticiones entrantes por consola en tiempo real
 app.use((req, res, next) => {
     console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url}`);
     next();
 });
 
-//debemos definir las rutas para los archivos
+// Debemos definir las rutas para los archivos estáticos de la interfaz pública (Frontend)
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-//vamos a manejar las rutas de los recursos que se van a obtener por medio de las peticiones o respuestas
-//pueden existen rutas como app.use('api/usuarios', usuariosRouter) todas las rutas son los metodos posibles para cada formulario
-//router.get('/')
-//router.get('/usuarios')
-//router.post('/')
-//router.get('/:id')
-
+// Enrutadores de los recursos de la API
 const usuariosRouter = require('./Routers/usuarios');
 const productosRouter = require('./Routers/productos');
 const comprasRouter = require('./Routers/compras');
+const minecraftRouter = require('./Routers/minecraft'); // Endpoint personalizado
 
 app.use('/api/usuarios', usuariosRouter);
 app.use('/api/productos', productosRouter);
 app.use('/api/compras', comprasRouter);
+app.use('/api/minecraft', minecraftRouter);
 
-
-//vamos a documentar cada endpoint
+// Documentación básica de cada endpoint disponible en el ecosistema
 app.get('/api', (req, res) => {
     res.json({
         status : 'success',
-        message : 'API REST ',
+        message : 'API REST',
         endpoint : {
             usuarios : {
                 listar : 'GET /api/usuarios',
@@ -67,34 +61,36 @@ app.get('/api', (req, res) => {
                 crear : 'POST /api/compras',
                 actualizar : 'PUT /api/compras/:id',
                 eliminar : 'DELETE /api/compras/:id'
+            },
+            minecraft : {
+                listar : 'GET /api/minecraft',
+                obtener : 'GET /api/minecraft/:id',
+                crear : 'POST /api/minecraft',
+                actualizar : 'PUT /api/minecraft/:id',
+                eliminar : 'DELETE /api/minecraft/:id'
             }
-
         }
     });
 });
 
-//vamos a crear una funcion para las rutas inexisten
+// Función de escape y control para las rutas inexistentes en el prefijo api
 app.use('/api/*path', (req, res) => {
     res.status(404).json({
         status : 'error',
-        message : 'Ruta no encontrada'
+        message : 'Ruta no encontrada dentro de la API'
     });
-    res.send('Errores.html');
 });
 
-//necesitamos un manejador de errores
-app.use((err, req, res, next) =>{
-    console.log('error no manejado: ', err.message);
+// Manejador global de errores internos (Middleware de fin de cadena)
+app.use((err, req, res, next) => {
+    console.error('Error no manejado: ', err.message);
     res.status(500).json({
         status : 'error',
-        message : 'Error interno del servidor'
+        message : 'Error interno del servidor al procesar la solicitud'
     });
 });
 
+// Inicialización de la escucha del servidor en un único hilo de puerto estructurado
 app.listen(PORT, () => {
-    console.log('Servidor inicializado');
-});
-
-app.listen(3000, () => {
-    console.log('Servidor corriendo en el puerto 3000');
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
