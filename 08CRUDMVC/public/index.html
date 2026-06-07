@@ -11,17 +11,16 @@
     <header>
         <h1>Sistema de Compras</h1>
         <p>Práctica 3 — Express + CORS + Relaciones entre Tablas</p>
-        <!-- Navegación por pestañas para cambiar entre secciones -->
         <nav class="tabs">
             <button class="tab active" onclick="cambiarSeccion('usuarios')">Usuarios</button>
             <button class="tab" onclick="cambiarSeccion('productos')">Productos</button>
             <button class="tab" onclick="cambiarSeccion('compras')">Compras</button>
+            <button class="tab" onclick="cambiarSeccion('minecraft')">Minecraft</button>
         </nav>
     </header>
 
     <main>
 
-        <!-- Panel de estado de la API -->
         <section class="info-api">
             <h3>Estado de la API</h3>
             <div class="api-status">
@@ -31,11 +30,7 @@
             </div>
         </section>
 
-        <!-- ========================================================= -->
-        <!-- SECCIÓN: USUARIOS -->
-        <!-- ========================================================= -->
         <div id="seccion-usuarios" class="seccion">
-
             <section class="formulario-section">
                 <h2 id="form-titulo-usuario">Agregar Usuario</h2>
                 <form id="form-usuario" novalidate>
@@ -76,11 +71,7 @@
             </section>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- SECCIÓN: PRODUCTOS -->
-        <!-- ========================================================= -->
         <div id="seccion-productos" class="seccion" style="display:none;">
-
             <section class="formulario-section">
                 <h2 id="form-titulo-producto">Agregar Producto</h2>
                 <form id="form-producto" novalidate>
@@ -121,18 +112,13 @@
             </section>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- SECCIÓN: COMPRAS -->
-        <!-- ========================================================= -->
         <div id="seccion-compras" class="seccion" style="display:none;">
-
             <section class="formulario-section">
                 <h2>Registrar Compra</h2>
                 <form id="form-compra" novalidate>
                     <div class="campos-grid campos-grid-3">
                         <div class="campo">
                             <label for="compra-usuario">Usuario:</label>
-                            <!-- Select se llena dinámicamente con los usuarios existentes -->
                             <select id="compra-usuario" required>
                                 <option value="">-- Seleccionar --</option>
                             </select>
@@ -178,7 +164,127 @@
             </section>
         </div>
 
-        <!-- Notificaciones -->
+        <div id="seccion-minecraft" class="seccion" style="display:none;">
+
+            <section class="formulario-section">
+                <h2 id="form-titulo-minecraft">Agregar Item al Catálogo</h2>
+                <form id="form-minecraft" novalidate>
+                    <input type="hidden" id="minecraft-id-db">
+                    
+                    <div class="campos-grid">
+                        <div class="campo">
+                            <label for="minecraft-nombre">Nombre del Item:</label>
+                            <input type="text" id="minecraft-nombre" placeholder="Ej: Espada de Netherite" required>
+                            <span class="error" id="error-minecraft-nombre"></span>
+                        </div>
+                        
+                        <div class="campo">
+                            <label for="minecraft-categoria">Categoría:</label>
+                            <select id="minecraft-categoria" required>
+                                <option value="">-- Seleccionar --</option>
+                                <option value="Bloques">Bloques</option>
+                                <option value="Herramientas">Herramientas / Armas</option>
+                                <option value="Materiales">Materiales / Recursos</option>
+                                <option value="Consumibles">Consumibles (Comida/Pociones)</option>
+                            </select>
+                            <span class="error" id="error-minecraft-categoria"></span>
+                        </div>
+
+                        <div class="campo">
+                            <label for="minecraft-id-ingame">ID de Minecraft (Namespace:id):</label>
+                            <input type="text" id="minecraft-id-ingame" placeholder="Ej: minecraft:netherite_sword" required>
+                            <span class="error" id="error-minecraft-id-ingame"></span>
+                        </div>
+
+                        <div class="campo">
+                            <label for="minecraft-tipo-item">Tipo de Item:</label>
+                            <select id="minecraft-tipo-item" required>
+                                <option value="">-- Seleccionar --</option>
+                                <option value="Vanilla">Vanilla (Base)</option>
+                                <option value="Mod">Modificado (Mod)</option>
+                            </select>
+                            <span class="error" id="error-minecraft-tipo-item"></span>
+                        </div>
+
+                        <div class="campo" style="grid-column: span 2;">
+                            <label for="minecraft-foto-url">Enlace de la imagen (URL):</label>
+                            <input type="url" id="minecraft-foto-url" placeholder="https://ejemplo.com/imagen.png">
+                            <span class="error" id="error-minecraft-foto"></span>
+                        </div>
+
+                        <div class="campo" style="grid-column: span 2;">
+                            <label for="minecraft-descripcion">Breve Descripción:</label>
+                            <textarea id="minecraft-descripcion" rows="3" placeholder="Describe las propiedades o efectos del item..."></textarea>
+                            <span class="error" id="error-minecraft-descripcion"></span>
+                        </div>
+                    </div>
+
+                    <div class="botones">
+                        <button type="submit" id="btn-guardar-minecraft">Guardar Ítem</button>
+                        <button type="button" id="btn-cancelar-minecraft" class="btn-secundario" style="display:none;">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="tabla-section">
+                <h2>Items Registrados <span id="contador-minecraft" class="badge badge-neutral">0</span></h2>
+                <p id="carga-minecraft">Cargando ítems del inventario...</p>
+                <table id="tabla-minecraft" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Foto</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Minecraft ID</th>
+                            <th>Origen</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-minecraft"></tbody>
+                </table>
+            </section>
+
+            <section class="formulario-section" id="preview-minecraft-section" style="margin-top: 25px; display: none;">
+                <h2>🔍 Ficha de Información de Bloque / Item</h2>
+                <div style="display: flex; gap: 25px; flex-wrap: wrap; align-items: center; background: #fdfdfd; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+                    
+                    <div style="flex: 1; min-width: 200px; text-align: center; background: #eaeaea; border-radius: 6px; padding: 15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
+                        <img id="preview-mine-img" src="" alt="Icono" style="max-width: 180px; max-height: 180px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));">
+                    </div>
+
+                    <div style="flex: 2; min-width: 250px;">
+                        <h3 id="preview-mine-nombre" style="margin-top: 0; color: #111; font-size: 1.5rem; border-bottom: 2px solid #555; padding-bottom: 5px;">-</h3>
+                        
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; background: transparent; box-shadow: none;">
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 6px 0; font-weight: bold; color: #555; width: 40%;">ID de Registro:</td>
+                                <td id="preview-mine-id" style="padding: 6px 0; color: #333;">-</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 6px 0; font-weight: bold; color: #555;">Categoría de Juego:</td>
+                                <td id="preview-mine-categoria" style="padding: 6px 0; color: #333;">-</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 6px 0; font-weight: bold; color: #555;">In-Game ID (Command):</td>
+                                <td style="padding: 6px 0;"><code id="preview-mine-gameid" style="background: #222; color: #a9ffaf; padding: 3px 6px; border-radius: 4px; font-family: monospace;">-</code></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 6px 0; font-weight: bold; color: #555;">Origen / Tipo:</td>
+                                <td id="preview-mine-tipo" style="padding: 6px 0; color: #333;">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0; font-weight: bold; color: #555; vertical-align: top;">Lore / Descripción:</td>
+                                <td id="preview-mine-desc" style="padding: 6px 0; color: #666; font-style: italic; line-height: 1.4;">-</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
         <div id="notificacion" class="notificacion" style="display:none;"></div>
 
     </main>
