@@ -28,12 +28,12 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 const usuariosRouter = require('./Routers/usuarios');
 const productosRouter = require('./Routers/productos');
 const comprasRouter = require('./Routers/compras');
-const minecraftRouter = require('./Routers/minecraft'); // Endpoint personalizado
+const minecraftRouter = require('./Routers/minecraft'); // Poner la ruta de mi Minecraft o pues el hobby 
 
 app.use('/api/usuarios', usuariosRouter);
 app.use('/api/productos', productosRouter);
 app.use('/api/compras', comprasRouter);
-app.use('/api/minecraft', minecraftRouter);
+app.use('/api/minecraft', minecraftRouter);     // La Api de mi hobby en el server
 
 // Documentación básica de cada endpoint disponible en el ecosistema
 app.get('/api', (req, res) => {
@@ -62,7 +62,7 @@ app.get('/api', (req, res) => {
                 actualizar : 'PUT /api/compras/:id',
                 eliminar : 'DELETE /api/compras/:id'
             },
-            minecraft : {
+            minecraft : {                                           //esperar una respuesta de cada api dependiendo de su metodo, ya sea el gets o el put o el delete
                 listar : 'GET /api/minecraft',
                 obtener : 'GET /api/minecraft/:id',
                 crear : 'POST /api/minecraft',

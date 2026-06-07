@@ -3,10 +3,28 @@ const router = express.Router();
 // CAMBIO 1: Ajusta la ruta para salir de src y entrar a DB
 const db = require('../DB/database'); 
 
-// 1. LISTAR ÍTEMS
+// la lista de la constante de las categorias para solo agregar y no editatr ene el html
+const CATEGORIAS_PERMITIDAS = [
+    "Espadas", "Hachas", "Picos", "Palas", "Azadas", "Arcos", "Ballestas", 
+    "Tridentes", "Escudos", "Cascos", "Pecheras", "Pantalones", "Botas", 
+    "Comidas", "Pociones", "Cubos", "Mapas", "Brújulas", "Relojes", "Libros", 
+    "Tótems", "Perlas de Ender", "Ojos de Ender", "Cohetes", "Cañas de Pescar", 
+    "Tijeras", "Pedernal y Acero", "Etiquetas", "Monturas", "Discos Musicales", 
+    "Bloques", "Minerales", "Gemas", "Lingotes", "Polvo de Redstone", 
+    "Semillas", "Tinturas"
+];
+
+//se da una respuesta a los datos de la lista
+router.get('/categorias', (req, res) => {
+    res.json({
+        status: 'success',
+        data: CATEGORIAS_PERMITIDAS
+    });
+});
+
+// listar los iteams
 router.get('/', async (req, res, next) => {
     try {
-        // CAMBIO 2: Cambiar pool.query por db.execute
         const [rows] = await db.execute('SELECT * FROM minecraft ORDER BY id DESC');
         res.json({
             status: 'success',
@@ -18,7 +36,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// 2. OBTENER UN ÍTEM POR ID
+// se obtienen cada iteam por su ID, que no es la que pones del minecraft, la de minecraft:noseque_noseuqe, la otra
 router.get('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -37,23 +55,56 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-// 3. CREAR ÍTEM
+// crear un iteam nuevo
 router.post('/', async (req, res, next) => {
     try {
-        const { nombre, categoria, minecraft_id, tipo_item, descripcion, foto_url } = req.body;
+        let { nombre, categoria, minecraft_id, tipo_item, descripcion, foto_url } = req.body;
 
-        if (!nombre || !categoria || !minecraft_id || !tipo_item) {
+        if (!nombre || !categoria || !minecraft_id || !tipo_item ||
+            nombre.trim() === "" || categoria.trim() === "" || minecraft_id.trim() === "" || tipo_item.trim() === "") {
             return res.status(400).json({
                 status: 'error',
-                message: 'Faltan campos obligatorios en el formulario.'
+                message: 'Faltan campos obligatorios o contienen solo espacios en blanco.'
             });
         }
 
+        nombre = nombre.trim();
+        categoria = categoria.trim();
+        minecraft_id = minecraft_id.trim();
+        tipo_item = tipo_item.trim();
+        descripcion = descripcion ? descripcion.trim() : null;
+        foto_url = foto_url ? foto_url.trim() : null;
+
+        if (nombre.length > 100) {
+            return res.status(400).json({ status: 'error', message: 'El nombre no puede superar los 100 caracteres.' });
+        }
+
+        if (descripcion && descripcion.length > 100) {
+            return res.status(400).json({ status: 'error', message: 'La descripción no puede superar los 100 caracteres.' });
+        }
+
+        const regexMinecraftId = /^[a-z0-9_]+:[a-z0-9_]+$/;
+        if (minecraft_id.length > 100 || !regexMinecraftId.test(minecraft_id)) {
+            return res.status(400).json({ 
+                status: 'error', 
+                message: 'El ID de Minecraft debe ser menor a 100 caracteres y tener la estructura "namespace:item" en minúsculas.' 
+            });
+        }
+
+        if (!CATEGORIAS_PERMITIDAS.includes(categoria)) {
+            return res.status(400).json({ status: 'error', message: 'La categoría seleccionada no es válida en el sistema.' });
+        }
+
+        if (foto_url && !foto_url.startsWith('http://') && !foto_url.startsWith('https://')) {
+            return res.status(400).json({ status: 'error', message: 'El enlace de la imagen debe ser una URL válida.' });
+        }
+
+        //esto de la base de datos
         const query = `
             INSERT INTO minecraft (nombre, categoria, minecraft_id, tipo_item, descripcion, foto_url) 
             VALUES (?, ?, ?, ?, ?, ?)
         `;
-        const [result] = await db.execute(query, [nombre, categoria, minecraft_id, tipo_item, descripcion || null, foto_url || null]);
+        const [result] = await db.execute(query, [nombre, categoria, minecraft_id, tipo_item, descripcion, foto_url]);
 
         res.status(201).json({
             status: 'success',
@@ -65,16 +116,51 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-// 4. ACTUALIZAR ÍTEM
+// actualizar un iteam por el metodo put
 router.put('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { nombre, categoria, minecraft_id, tipo_item, descripcion, foto_url } = req.body;
+        let { nombre, categoria, minecraft_id, tipo_item, descripcion, foto_url } = req.body;
+
+        if (!nombre || !categoria || !minecraft_id || !tipo_item ||
+            nombre.trim() === "" || categoria.trim() === "" || minecraft_id.trim() === "" || tipo_item.trim() === "") {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Faltan campos obligatorios o contienen solo espacios en blanco para actualizar.'
+            });
+        }
+
+        nombre = nombre.trim();
+        categoria = categoria.trim();
+        minecraft_id = minecraft_id.trim();
+        tipo_item = tipo_item.trim();
+        descripcion = descripcion ? descripcion.trim() : null;
+        foto_url = foto_url ? foto_url.trim() : null;
+
+        if (nombre.length > 100) {
+            return res.status(400).json({ status: 'error', message: 'El nombre no puede superar los 100 caracteres.' });
+        }
+
+        if (descripcion && descripcion.length > 100) {
+            return res.status(400).json({ status: 'error', message: 'La descripción no puede superar los 100 caracteres.' });
+        }
+
+        const regexMinecraftId = /^[a-z0-9_]+:[a-z0-9_]+$/;
+        if (minecraft_id.length > 100 || !regexMinecraftId.test(minecraft_id)) {
+            return res.status(400).json({ 
+                status: 'error', 
+                message: 'El ID de Minecraft debe ser menor a 100 caracteres y estructura válida.' 
+            });
+        }
+
+        if (!CATEGORIAS_PERMITIDAS.includes(categoria)) {
+            return res.status(400).json({ status: 'error', message: 'La categoría seleccionada no es válida.' });
+        }
 
         let query;
         let params;
 
-        if (foto_url !== undefined) {
+        if (req.body.foto_url !== undefined) {
             query = `
                 UPDATE minecraft 
                 SET nombre = ?, categoria = ?, minecraft_id = ?, tipo_item = ?, descripcion = ?, foto_url = ? 
@@ -101,7 +187,7 @@ router.put('/:id', async (req, res, next) => {
     }
 });
 
-// 5. ELIMINAR ÍTEM
+// eliminar el iteam por el metodo deleate
 router.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;

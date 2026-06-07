@@ -596,6 +596,7 @@ async function eliminarCompra(id) {
 // ============================================================
 // 5. MÓDULO DE MINECRAFT
 // ============================================================
+//cada uno de los parametros y de los datos de mi hobby
 const formMinecraft = document.getElementById('form-minecraft');
 const inputMinecraftIdDb = document.getElementById('minecraft-id-db');
 const inputMinecraftNombre = document.getElementById('minecraft-nombre');
@@ -604,10 +605,10 @@ const inputMinecraftInGameId = document.getElementById('minecraft-id-ingame');
 const selectMinecraftTipoItem = document.getElementById('minecraft-tipo-item');
 const inputMinecraftDescripcion = document.getElementById('minecraft-descripcion');
 
-// Input de tipo texto/url para el enlace directo
+// tenia que poner url ya que imagen me daba errores catastroficos
 const inputMinecraftFotoUrl = document.getElementById('minecraft-foto-url');
 
-// CORRECCIÓN: Se removió la variable duplicada 'formTituloMinecraft' de este bloque
+// esto lo que ve el usuarius
 const formTituloMinecraft = document.getElementById('form-titulo-minecraft');
 const btnGuardarMinecraft = document.getElementById('btn-guardar-minecraft');
 const btnCancelarMinecraft = document.getElementById('btn-cancelar-minecraft');
@@ -615,12 +616,13 @@ const tbodyMinecraft = document.getElementById('tbody-minecraft');
 const tablaMinecraft = document.getElementById('tabla-minecraft');
 const cargaMinecraft = document.getElementById('carga-minecraft');
 const contadorMinecraft = document.getElementById('contador-minecraft');
-
+//cada error que pase para que no se petatie el sitio, spoiler:(se puede petatear)
 const errorMNombre = document.getElementById('error-minecraft-nombre');
 const errorMCategoria = document.getElementById('error-minecraft-categoria');
 const errorMInGameId = document.getElementById('error-minecraft-id-ingame');
 const errorMTipoItem = document.getElementById('error-minecraft-tipo-item');
 
+//esto va a cargar por medio de la api si hay registros, la tabla de todos los datos y poner la foto del iteam
 async function cargarMinecraft() {
     try {
         const resp = await fetchAPI('/api/minecraft');
@@ -662,10 +664,10 @@ async function cargarMinecraft() {
         }
         if (contadorMinecraft) contadorMinecraft.textContent = `${resp.count}`;
     } catch (error) {
-        mostrarNotificacion('Error al cargar catálogo de Minecraft: ' + error.message, 'error');
+        mostrarNotificacion('Error al cargar catálogo de Minecraft: ' + error.message, 'error');    //el error al cargar la lsita
     }
 }
-
+//las validaciones del programa para que sirva y no pase nada, entre mas validaciones se tenga, un dolor es saber que esta mal y que no
 function validarFormMinecraft() {
     let ok = true;
     if (!inputMinecraftNombre || !inputMinecraftNombre.value.trim() || inputMinecraftNombre.value.trim().length < 2) {
@@ -708,9 +710,10 @@ function validarFormMinecraft() {
 }
 
 function limpiarFormMinecraft() {
-    if (formMinecraft) formMinecraft.reset();
+    if (formMinecraft) formMinecraft.reset(); // Esto borra lo escrito y que no se le dio a guardar
     if (inputMinecraftIdDb) inputMinecraftIdDb.value = '';
-    
+        inicializarCategoriasMinecraft(); 
+    //basicamente te deja todo en limpio para que no se guarde, guatde y guarde
     if (formTituloMinecraft) formTituloMinecraft.textContent = 'Agregar Item al Catálogo';
     if (btnGuardarMinecraft) btnGuardarMinecraft.textContent = 'Guardar Ítem';
     if (btnCancelarMinecraft) btnCancelarMinecraft.style.display = 'none';
@@ -769,8 +772,12 @@ if (formMinecraft) {
     });
 }
 
+// para aplicar el metodo put del api
 async function editarMinecraft(id) {
     try {
+        // cargar las categorias que tengo en el back
+        await inicializarCategoriasMinecraft();
+
         const resp = await fetchAPI(`/api/minecraft/${id}`);
         const item = resp.data;
 
@@ -814,38 +821,60 @@ if (btnCancelarMinecraft) {
     btnCancelarMinecraft.addEventListener('click', limpiarFormMinecraft);
 }
 
+async function inicializarCategoriasMinecraft() {
+    const selectCategoria = document.getElementById('minecraft-categoria');
+    if (!selectCategoria) return;
+
+    try {
+        // hay que forzar para que se muestre sin depender tanto del api
+        const respuesta = await fetch('/api/minecraft/categorias');
+        const resultado = await respuesta.json();
+
+        if (resultado.status === 'success' && Array.isArray(resultado.data)) {
+            // se limpia la barra esa de seleccionar
+            selectCategoria.innerHTML = '<option value="">-- Seleccionar --</option>';
+            
+            // hay que poner las opciones del back
+            resultado.data.forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria;
+                option.textContent = categoria;
+                selectCategoria.appendChild(option);
+            });
+            console.log("¡Categorías cargadas con éxito usando fetch nativo!");
+        }
+    } catch (error) {
+        console.error("Error crítico en el fetch de categorías:", error);
+    }
+}
+
 // ============================================================
 // 6. NAVEGACIÓN POR PESTAÑAS
 // ============================================================
 function cambiarSeccion(seccion) {
-    // 1. Ocultar de manera absoluta todas las capas de contenido
     document.querySelectorAll('.seccion').forEach(s => {
         s.style.display = 'none';
     });
 
-    // 2. Limpiar estilos activos globales en las pestañas
     document.querySelectorAll('.tab').forEach(t => {
         t.classList.remove('active');
     });
 
-    // 3. Desplegar la vista de destino
     const seccionObjetivo = document.getElementById(`seccion-${seccion}`);
     if (seccionObjetivo) seccionObjetivo.style.display = 'block';
 
-    // 4. Asignar la clase active evaluando el texto del elemento
     document.querySelectorAll('.tab').forEach(t => {
         if (t.textContent.toLowerCase().trim() === seccion.toLowerCase().trim()) {
             t.classList.add('active');
         }
     });
 
-    // 5. CORRECCIÓN: Las funciones de renderizado de la API se gatillan EXCLUSIVAMENTE
-    //    al alternar entre las pestañas del menú superior. No interfieren con el DOM local.
     if (seccion === 'compras') {
         cargarSelectUsuarios();
         cargarSelectProductos();
         cargarCompras();
     } else if (seccion === 'minecraft') {
+        inicializarCategoriasMinecraft(); // Asegura que se carguen al entrar a la pestaña
         cargarMinecraft();
     } else if (seccion === 'usuarios') {
         cargarUsuarios();
@@ -858,11 +887,11 @@ function cambiarSeccion(seccion) {
 // 7. INICIALIZACIÓN
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Carga inicial pasiva de datos generales de la aplicación
     cargarUsuarios();
     cargarProductos();
     cargarCompras();
     cargarSelectUsuarios();
     cargarSelectProductos();
     cargarMinecraft();
+    inicializarCategoriasMinecraft();
 });
