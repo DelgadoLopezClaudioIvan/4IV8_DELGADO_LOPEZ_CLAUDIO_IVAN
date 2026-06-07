@@ -73,7 +73,6 @@ app.get('/api', (req, res) => {
     });
 });
 
-// Función de escape y control para las rutas inexistentes en el prefijo api
 app.use('/api/*path', (req, res) => {
     res.status(404).json({
         status : 'error',
@@ -81,8 +80,34 @@ app.use('/api/*path', (req, res) => {
     });
 });
 
-// Manejador global de errores internos (Middleware de fin de cadena)
+// ============================================================
+// 🌟 REEMPLAZA TU VIEJO MANEJADOR DE ERRORES POR ESTE:
+// ============================================================
 app.use((err, req, res, next) => {
+    
+    // Detectamos si MySQL rechazó el guardado por culpa de una restricción UNIQUE (Error 1062)
+    if (err.errno === 1062 || err.code === 'ER_DUP_ENTRY') {
+        console.warn(`[REGISTRO DUPLICADO] Intento de duplicar datos en: ${req.method} ${req.url}`);
+        
+        let mensajeCliente = 'Este registro ya existe en el sistema.';
+
+        // Evaluamos la URL de la petición para saber exactamente qué módulo falló
+        if (req.url.includes('minecraft')) {
+            mensajeCliente = '¡Error! Ese ID de Minecraft (namespace:item) ya está registrado en el catálogo.';
+        } else if (req.url.includes('usuarios')) {
+            mensajeCliente = '¡Error! Ese correo electrónico ya se encuentra registrado por otro usuario.';
+        } else if (req.url.includes('productos')) {
+            mensajeCliente = '¡Error! Ya existe un producto registrado con ese mismo nombre.';
+        }
+
+        // Respondemos con un código 400 (Bad Request) y el mensaje limpio
+        return res.status(400).json({
+            status: 'error',
+            message: mensajeCliente
+        });
+    }
+
+    // Si es cualquier otro tipo de error (problemas de conexión, sintaxis, etc.), sigue igual:
     console.error('Error no manejado: ', err.message);
     res.status(500).json({
         status : 'error',
