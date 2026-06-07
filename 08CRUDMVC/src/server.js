@@ -81,11 +81,11 @@ app.use('/api/*path', (req, res) => {
 });
 
 // ============================================================
-// 🌟 REEMPLAZA TU VIEJO MANEJADOR DE ERRORES POR ESTE:
+// este esta mejor manejo de errores que el anterior
 // ============================================================
 app.use((err, req, res, next) => {
     
-    // Detectamos si MySQL rechazó el guardado por culpa de una restricción UNIQUE (Error 1062)
+    // evitar que se duplique los campos
     if (err.errno === 1062 || err.code === 'ER_DUP_ENTRY') {
         console.warn(`[REGISTRO DUPLICADO] Intento de duplicar datos en: ${req.method} ${req.url}`);
         
@@ -100,14 +100,14 @@ app.use((err, req, res, next) => {
             mensajeCliente = '¡Error! Ya existe un producto registrado con ese mismo nombre.';
         }
 
-        // Respondemos con un código 400 (Bad Request) y el mensaje limpio
+        // respondemos con un error
         return res.status(400).json({
             status: 'error',
             message: mensajeCliente
         });
     }
 
-    // Si es cualquier otro tipo de error (problemas de conexión, sintaxis, etc.), sigue igual:
+    // esto entre la base de datos y el servidor
     console.error('Error no manejado: ', err.message);
     res.status(500).json({
         status : 'error',
@@ -115,7 +115,8 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Inicialización de la escucha del servidor en un único hilo de puerto estructurado
+// vemos si si inicia el server o no
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
+    console.log(`Tu servidor con el puerto ${PORT} si funciona`);
+    console.log(`Presiona CTRL + C para salir`);
 });
