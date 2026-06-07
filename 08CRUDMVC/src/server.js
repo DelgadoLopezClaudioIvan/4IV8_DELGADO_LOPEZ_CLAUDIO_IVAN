@@ -11,10 +11,6 @@ const PORT = process.env.PORT || 3000;
 // el cual para cada peticion que pasa por la ruta de la vista, obtiene una petición y la envia a un controlador
 app.use(cors());
 
-// MODIFICACIÓN AQUÍ: Aumentamos el límite de tamaño para aceptar las imágenes en Base64 de Minecraft sin dar error 413 (Payload Too Large)
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
 // Middleware para registrar las peticiones entrantes por consola en tiempo real
 app.use((req, res, next) => {
     console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url}`);
