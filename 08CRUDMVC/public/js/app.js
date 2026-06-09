@@ -596,7 +596,7 @@ async function eliminarCompra(id) {
 // ============================================================
 // 5. MÓDULO DE MINECRAFT
 // ============================================================
-//cada uno de los parametros y de los datos de mi hobby
+// cada uno de los parametros y de los datos de mi hobby
 const formMinecraft = document.getElementById('form-minecraft');
 const inputMinecraftIdDb = document.getElementById('minecraft-id-db');
 const inputMinecraftNombre = document.getElementById('minecraft-nombre');
@@ -616,58 +616,121 @@ const tbodyMinecraft = document.getElementById('tbody-minecraft');
 const tablaMinecraft = document.getElementById('tabla-minecraft');
 const cargaMinecraft = document.getElementById('carga-minecraft');
 const contadorMinecraft = document.getElementById('contador-minecraft');
-//cada error que pase para que no se petatie el sitio, spoiler:(se puede petatear)
+// cada error que pase para que no se petatie el sitio, spoiler:(se puede petatear)
 const errorMNombre = document.getElementById('error-minecraft-nombre');
 const errorMCategoria = document.getElementById('error-minecraft-categoria');
 const errorMInGameId = document.getElementById('error-minecraft-id-ingame');
 const errorMTipoItem = document.getElementById('error-minecraft-tipo-item');
 
-//esto va a cargar por medio de la api si hay registros, la tabla de todos los datos y poner la foto del iteam
+// 🌟 NUEVOS ELEMENTOS DE CONTROL (FILTROS Y ORDENAMIENTO)
+const filtroMinecraftTipo = document.getElementById('filtro-minecraft-tipo');
+const filtroMinecraftCategoria = document.getElementById('filtro-minecraft-categoria');
+const ordenarMinecraft = document.getElementById('ordenar-minecraft');
+
+// Variable global para guardar los ítems crudos que vienen del servidor
+let datosMinecraftOriginales = [];
+
+// esto va a cargar por medio de la api si hay registros
 async function cargarMinecraft() {
     try {
         const resp = await fetchAPI('/api/minecraft');
         if (cargaMinecraft) cargaMinecraft.style.display = 'none';
 
-        if (resp.data.length === 0) {
-            if (tablaMinecraft) tablaMinecraft.style.display = 'none';
-            if (cargaMinecraft) {
-                cargaMinecraft.textContent = 'No hay ítems registrados en el catálogo.';
-                cargaMinecraft.style.display = 'block';
-            }
-        } else {
-            if (tablaMinecraft) tablaMinecraft.style.display = 'table';
-            if (tbodyMinecraft) {
-                tbodyMinecraft.innerHTML = '';
-                resp.data.forEach(item => {
-                    const fila = document.createElement('tr');
-                    
-                    const celdaImagen = item.foto_url 
-                        ? `<img src="${escapeHtml(item.foto_url)}" alt="${escapeHtml(item.nombre)}" style="width: 45px; height: 45px; object-fit: contain; border-radius: 4px;" onerror="this.src='https://placehold.co/45?text=Error'">`
-                        : `<span style="color: #888; font-size: 12px;">Sin foto</span>`;
+        // Guardamos los datos recibidos en la variable global para poder filtrarlos en el cliente
+        datosMinecraftOriginales = resp.data || [];
 
-                    fila.innerHTML = `
-                        <td>${item.id}</td>
-                        <td style="text-align: center;">${celdaImagen}</td>
-                        <td><strong>${escapeHtml(item.nombre)}</strong></td>
-                        <td><span class="badge-categoria">${escapeHtml(item.categoria)}</span></td>
-                        <td><code>${escapeHtml(item.minecraft_id)}</code></td>
-                        <td>${escapeHtml(item.tipo_item)}</td>
-                        <td>${escapeHtml(item.descripcion || '-')}</td>
-                        <td>
-                            <button class="btn-editar" onclick="editarMinecraft(${item.id})">Editar</button>
-                            <button class="btn-eliminar" onclick="confirmarEliminarMinecraft(${item.id}, '${escapeHtml(item.nombre)}')">Eliminar</button>
-                        </td>
-                    `;
-                    tbodyMinecraft.appendChild(fila);
-                });
-            }
-        }
-        if (contadorMinecraft) contadorMinecraft.textContent = `${resp.count}`;
+        // Llamamos a la función encargada de procesar el orden, los filtros y dibujar la tabla
+        procesarYRenderizarTabla();
+
     } catch (error) {
-        mostrarNotificacion('Error al cargar catálogo de Minecraft: ' + error.message, 'error');    //el error al cargar la lsita
+        mostrarNotificacion('Error al cargar catálogo de Minecraft: ' + error.message, 'error');
     }
 }
-//las validaciones del programa para que sirva y no pase nada, entre mas validaciones se tenga, un dolor es saber que esta mal y que no
+
+// 🌟 NUEVA FUNCIÓN: Se encarga exclusivamente de filtrar, ordenar y renderizar en el DOM
+function procesarYRenderizarTabla() {
+    if (!tbodyMinecraft) return;
+
+    // 1. Clonamos el array original para no destruirlo al filtrar o cambiar el orden
+    let itemsProcesados = [...datosMinecraftOriginales];
+
+    // 2. Obtener valores de los filtros (si existen en el HTML)
+    const tipoSeleccionado = filtroMinecraftTipo ? filtroMinecraftTipo.value : 'todos';
+    const categoriaSeleccionada = filtroMinecraftCategoria ? filtroMinecraftCategoria.value : 'todos';
+    const ordenSeleccionado = ordenarMinecraft ? ordenarMinecraft.value : 'id-asc';
+
+    // 3. Aplicar Filtro de Origen (Vanilla vs Mod)
+    if (tipoSeleccionado !== 'todos') {
+        itemsProcesados = itemsProcesados.filter(item => item.tipo_item === tipoSeleccionado);
+    }
+
+    // 4. Aplicar Filtro de Categoría
+    if (categoriaSeleccionada !== 'todos') {
+        itemsProcesados = itemsProcesados.filter(item => item.categoria === categoriaSeleccionada);
+    }
+
+    // 5. Aplicar Criterio de Ordenamiento
+    if (ordenSeleccionado === 'id-asc') {
+        itemsProcesados.sort((a, b) => Number(a.id) - Number(b.id));
+    } else if (ordenSeleccionado === 'id-desc') {
+        itemsProcesados.sort((a, b) => Number(b.id) - Number(a.id));
+    } else if (ordenSeleccionado === 'nombre-az') {
+        itemsProcesados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    } else if (ordenSeleccionado === 'nombre-za') {
+        itemsProcesados.sort((a, b) => b.nombre.localeCompare(a.nombre));
+    }
+
+    // 6. Validar si quedaron ítems tras los filtros
+    if (itemsProcesados.length === 0) {
+        if (tablaMinecraft) tablaMinecraft.style.display = 'none';
+        if (cargaMinecraft) {
+            cargaMinecraft.textContent = 'No se encontraron ítems con los filtros seleccionados.';
+            cargaMinecraft.style.display = 'block';
+        }
+        if (contadorMinecraft) contadorMinecraft.textContent = '0';
+        return;
+    }
+
+    // Mostrar la tabla y limpiar el tbody
+    if (tablaMinecraft) tablaMinecraft.style.display = 'table';
+    if (cargaMinecraft) cargaMinecraft.style.display = 'none';
+    tbodyMinecraft.innerHTML = '';
+
+    // 7. Renderizar las filas filtradas y ordenadas
+    itemsProcesados.forEach(item => {
+        const fila = document.createElement('tr');
+        
+        const celdaImagen = item.foto_url 
+            ? `<img src="${escapeHtml(item.foto_url)}" alt="${escapeHtml(item.nombre)}" style="width: 45px; height: 45px; object-fit: contain; border-radius: 4px;" onerror="this.src='https://placehold.co/45?text=Error'">`
+            : `<span style="color: #888; font-size: 12px;">Sin foto</span>`;
+
+        fila.innerHTML = `
+            <td>${item.id}</td>
+            <td style="text-align: center;">${celdaImagen}</td>
+            <td><strong>${escapeHtml(item.nombre)}</strong></td>
+            <td><span class="badge-categoria">${escapeHtml(item.categoria)}</span></td>
+            <td><code>${escapeHtml(item.minecraft_id)}</code></td>
+            <td>${escapeHtml(item.tipo_item)}</td>
+            <td>${escapeHtml(item.descripcion || '-')}</td>
+            <td>
+                <button class="btn-editar" onclick="editarMinecraft(${item.id})">Editar</button>
+                <button class="btn-eliminar" onclick="confirmarEliminarMinecraft(${item.id}, '${escapeHtml(item.nombre)}')">Eliminar</button>
+            </td>
+        `;
+        tbodyMinecraft.appendChild(fila);
+    });
+
+    // Actualizar el contador con los ítems visibles en este momento
+    if (contadorMinecraft) contadorMinecraft.textContent = `${itemsProcesados.length}`;
+}
+
+// 🌟 ESCUCHADORES DE EVENTOS: Detectan cuando el usuario cambia un filtro o el orden
+if (filtroMinecraftTipo) filtroMinecraftTipo.addEventListener('change', procesarYRenderizarTabla);
+if (filtroMinecraftCategoria) filtroMinecraftCategoria.addEventListener('change', procesarYRenderizarTabla);
+if (ordenarMinecraft) ordenarMinecraft.addEventListener('change', procesarYRenderizarTabla);
+
+
+// las validaciones del programa para que sirva y no pase nada
 function validarFormMinecraft() {
     let ok = true;
     if (!inputMinecraftNombre || !inputMinecraftNombre.value.trim() || inputMinecraftNombre.value.trim().length < 2) {
@@ -710,10 +773,10 @@ function validarFormMinecraft() {
 }
 
 function limpiarFormMinecraft() {
-    if (formMinecraft) formMinecraft.reset(); // Esto borra lo escrito y que no se le dio a guardar
+    if (formMinecraft) formMinecraft.reset(); 
     if (inputMinecraftIdDb) inputMinecraftIdDb.value = '';
-        inicializarCategoriasMinecraft(); 
-    //basicamente te deja todo en limpio para que no se guarde, guatde y guarde
+    inicializarCategoriasMinecraft(); 
+    
     if (formTituloMinecraft) formTituloMinecraft.textContent = 'Agregar Item al Catálogo';
     if (btnGuardarMinecraft) btnGuardarMinecraft.textContent = 'Guardar Ítem';
     if (btnCancelarMinecraft) btnCancelarMinecraft.style.display = 'none';
@@ -738,11 +801,8 @@ if (formMinecraft) {
         const datos = {
             nombre: inputMinecraftNombre.value.trim(),
             categoria: selectMinecraftCategoria.value,
-            
-            // Enviamos ambos nombres para asegurar que el backend reciba el correcto
             minecraft_id: inputMinecraftInGameId.value.trim(),
             minecraft_id_ingame: inputMinecraftInGameId.value.trim(),
-            
             tipo_item: selectMinecraftTipoItem.value,
             descripcion: inputMinecraftDescripcion.value.trim() || null,
             foto_url: inputMinecraftFotoUrl ? inputMinecraftFotoUrl.value.trim() || null : null
@@ -772,10 +832,8 @@ if (formMinecraft) {
     });
 }
 
-// para aplicar el metodo put del api
 async function editarMinecraft(id) {
     try {
-        // cargar las categorias que tengo en el back
         await inicializarCategoriasMinecraft();
 
         const resp = await fetchAPI(`/api/minecraft/${id}`);
@@ -826,22 +884,35 @@ async function inicializarCategoriasMinecraft() {
     if (!selectCategoria) return;
 
     try {
-        // hay que forzar para que se muestre sin depender tanto del api
         const respuesta = await fetch('/api/minecraft/categorias');
         const resultado = await respuesta.json();
 
         if (resultado.status === 'success' && Array.isArray(resultado.data)) {
-            // se limpia la barra esa de seleccionar
+            // 1. Limpiar e inicializar el select del FORMULARIO
             selectCategoria.innerHTML = '<option value="">-- Seleccionar --</option>';
             
-            // hay que poner las opciones del back
+            // 2. Limpiar e inicializar el nuevo select del FILTRO (Si existe en tu HTML)
+            if (filtroMinecraftCategoria) {
+                filtroMinecraftCategoria.innerHTML = '<option value="todos">Todas las categorías</option>';
+            }
+            
+            // 3. Inyectar las opciones en ambos selectores dinámicamente
             resultado.data.forEach(categoria => {
-                const option = document.createElement('option');
-                option.value = categoria;
-                option.textContent = categoria;
-                selectCategoria.appendChild(option);
+                // Opción para el Formulario
+                const optionForm = document.createElement('option');
+                optionForm.value = categoria;
+                optionForm.textContent = categoria;
+                selectCategoria.appendChild(optionForm);
+
+                // Opción para la Barra de Filtros
+                if (filtroMinecraftCategoria) {
+                    const optionFiltro = document.createElement('option');
+                    optionFiltro.value = categoria;
+                    optionFiltro.textContent = categoria;
+                    filtroMinecraftCategoria.appendChild(optionFiltro);
+                }
             });
-            console.log("¡Categorías cargadas con éxito usando fetch nativo!");
+            console.log("¡Categorías cargadas con éxito en Formulario y Filtros!");
         }
     } catch (error) {
         console.error("Error crítico en el fetch de categorías:", error);
@@ -874,7 +945,7 @@ function cambiarSeccion(seccion) {
         cargarSelectProductos();
         cargarCompras();
     } else if (seccion === 'minecraft') {
-        inicializarCategoriasMinecraft(); // Asegura que se carguen al entrar a la pestaña
+        inicializarCategoriasMinecraft(); 
         cargarMinecraft();
     } else if (seccion === 'usuarios') {
         cargarUsuarios();

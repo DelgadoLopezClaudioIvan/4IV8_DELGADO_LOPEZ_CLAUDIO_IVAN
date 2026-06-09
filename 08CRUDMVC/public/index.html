@@ -30,9 +30,6 @@
             </div>
         </section>
 
-        <!-- ========================================================= -->
-        <!-- SECCIÓN: USUARIOS -->
-        <!-- ========================================================= -->
         <div id="seccion-usuarios" class="seccion">
             <section class="formulario-section">
                 <h2 id="form-titulo-usuario">Agregar Usuario</h2>
@@ -73,10 +70,6 @@
                 </table>
             </section>
         </div>
-
-        <!-- ========================================================= -->
-        <!-- SECCIÓN: PRODUCTOS -->
-        <!-- ========================================================= -->
 
         <div id="seccion-productos" class="seccion" style="display:none;">
             <section class="formulario-section">
@@ -119,9 +112,6 @@
             </section>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- SECCIÓN: COMPRAS -->
-        <!-- ========================================================= -->
         <div id="seccion-compras" class="seccion" style="display:none;">
             <section class="formulario-section">
                 <h2>Registrar Compra</h2>
@@ -174,10 +164,6 @@
             </section>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- SECCIÓN: MINECRAFT_MI HOBBY -->
-        <!-- ========================================================= -->
-
         <div id="seccion-minecraft" class="seccion" style="display:none;">
 
             <section class="formulario-section">
@@ -187,21 +173,21 @@
                     
                     <div class="campos-grid">
                         <div class="campo">
-                            <label for="minecraft-nombre">Nombre del Item:</label>
+                            <label for="minecraft-nombre">Nombre del Item:(100 caracteres)</label>
                             <input type="text" id="minecraft-nombre" placeholder="Ej: Espada de Netherite" required>
                             <span class="error" id="error-minecraft-nombre"></span>
                         </div>
                         
                         <div class="campo">
-                        <label for="minecraft-categoria">Categoría:</label>
-                        <select id="minecraft-categoria" required>
-                            <option value="">-- Seleccionar --</option>
+                            <label for="minecraft-categoria">Categoría:</label>
+                            <select id="minecraft-categoria" required>
+                                <option value="">-- Seleccionar --</option>
                             </select>
-                        <span class="error" id="error-minecraft-categoria"></span>
-                    </div>
+                            <span class="error" id="error-minecraft-categoria"></span>
+                        </div>
 
                         <div class="campo">
-                            <label for="minecraft-id-ingame">ID de Minecraft (Namespace:id):</label>
+                            <label for="minecraft-id-ingame">ID de Minecraft (Namespace:id):(100 caracteres)</label>
                             <input type="text" id="minecraft-id-ingame" placeholder="Ej: minecraft:netherite_sword" required>
                             <span class="error" id="error-minecraft-id-ingame"></span>
                         </div>
@@ -223,51 +209,27 @@
                         </div>
 
                         <div class="campo" style="grid-column: span 2;">
-                    <label for="minecraft-descripcion">Breve Descripción:</label>
-                    <textarea id="minecraft-descripcion" rows="6" placeholder="Describe las propiedades o efectos del item..." style="width: 100%;"></textarea>
-                    <span class="error" id="error-minecraft-descripcion"></span>
-                </div>
+                            <label for="minecraft-descripcion">Breve Descripción:(100 caracteres)</label>
+                            <textarea id="minecraft-descripcion" rows="6" placeholder="Describe las propiedades o efectos del item..." style="width: 100%;"></textarea>
+                            <span class="error" id="error-minecraft-descripcion"></span>
+                        </div>
                     </div>
 
                     <div class="botones">
-                        
                         <button type="submit" id="btn-guardar-minecraft">Guardar Ítem</button>
                         <button type="button" id="btn-cancelar-minecraft" class="btn-secundario" style="display:none;">Cancelar</button>
                     </div>
                 </form>
             </section>
 
-            <section class="tabla-section">
-                <h2>Items Registrados <span id="contador-minecraft" class="badge badge-neutral">0</span></h2>
-                <p id="carga-minecraft">Cargando ítems del inventario...</p>
-                <table id="tabla-minecraft" style="display:none;">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Foto</th>
-                            <th>Nombre</th>
-                            <th>Categoría</th>
-                            <th>Minecraft ID</th>
-                            <th>Origen</th>
-                            <th>Descripción</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-minecraft"></tbody>
-                </table>
-            </section>
-
             <section class="formulario-section" id="preview-minecraft-section" style="margin-top: 25px; display: none;">
                 <h2>Ficha de Información de Bloque / Item</h2>
                 <div style="display: flex; gap: 25px; flex-wrap: wrap; align-items: center; background: #fdfdfd; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
-                    
                     <div style="flex: 1; min-width: 200px; text-align: center; background: #eaeaea; border-radius: 6px; padding: 15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
                         <img id="preview-mine-img" src="" alt="Icono" style="max-width: 180px; max-height: 180px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));">
                     </div>
-
                     <div style="flex: 2; min-width: 250px;">
                         <h3 id="preview-mine-nombre" style="margin-top: 0; color: #111; font-size: 1.5rem; border-bottom: 2px solid #555; padding-bottom: 5px;">-</h3>
-                        
                         <table style="width: 100%; border-collapse: collapse; margin-top: 10px; background: transparent; box-shadow: none;">
                             <tr style="border-bottom: 1px solid #eee;">
                                 <td style="padding: 6px 0; font-weight: bold; color: #555; width: 40%;">ID de Registro:</td>
@@ -291,8 +253,56 @@
                             </tr>
                         </table>
                     </div>
-
                 </div>
+            </section>
+
+            <section class="tabla-section">
+                <h2>Items Registrados <span id="contador-minecraft" class="badge badge-neutral">0</span></h2>
+                
+                <div class="tabla-controles" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; background: #f5f5f5; padding: 15px; border-radius: 6px; border: 1px solid #ddd;">
+                    <div class="control-item" style="flex: 1; min-width: 150px;">
+                        <label for="filtro-minecraft-tipo" style="display:block; font-weight:bold; margin-bottom:5px;">Origen:</label>
+                        <select id="filtro-minecraft-tipo" style="width:100%; padding:6px; border-radius:4px;">
+                            <option value="todos">Todos</option>
+                            <option value="Vanilla">Vanilla (Base)</option>
+                            <option value="Mod">Modificado (Mod)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item" style="flex: 1; min-width: 150px;">
+                        <label for="filtro-minecraft-categoria" style="display:block; font-weight:bold; margin-bottom:5px;">Categoría:</label>
+                        <select id="filtro-minecraft-categoria" style="width:100%; padding:6px; border-radius:4px;">
+                            <option value="todos">Todas las categorías</option>
+                        </select>
+                    </div>
+
+                    <div class="control-item" style="flex: 1; min-width: 150px;">
+                        <label for="ordenar-minecraft" style="display:block; font-weight:bold; margin-bottom:5px;">Ordenar por:</label>
+                        <select id="ordenar-minecraft" style="width:100%; padding:6px; border-radius:4px;">
+                            <option value="id-asc">ID (Menor a Mayor)</option>
+                            <option value="id-desc">ID (Mayor a Menor)</option>
+                            <option value="nombre-az">Nombre (A -> Z)</option>
+                            <option value="nombre-za">Nombre (Z -> A)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <p id="carga-minecraft">Cargando ítems del inventario...</p>
+                <table id="tabla-minecraft" style="display:none; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Foto</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Minecraft ID</th>
+                            <th>Origen</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-minecraft"></tbody>
+                </table>
             </section>
         </div>
 
@@ -301,8 +311,8 @@
     </main>
 
     <div style="text-align: center; margin: 30px 0;">
-            <a href="../../index.html" class="btn-regresar" style="text-decoration: none; padding: 10px 20px; background-color: #c21212; color: white; border-radius: 4px; font-weight: bold;">Regresar a la página</a>
-        </div>
+        <a href="../../index.html" class="btn-regresar" style="text-decoration: none; padding: 10px 20px; background-color: #c21212; color: white; border-radius: 4px; font-weight: bold;">Regresar a la página</a>
+    </div>
 
     <footer>
         <p>PNT — Práctica 3: Express + CORS + Relaciones MySQL</p>

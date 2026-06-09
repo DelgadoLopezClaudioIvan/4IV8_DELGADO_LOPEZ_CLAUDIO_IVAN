@@ -11,8 +11,21 @@ const CATEGORIAS_PERMITIDAS = [
     "Tótems", "Perlas de Ender", "Ojos de Ender", "Cohetes", "Cañas de Pescar", 
     "Tijeras", "Pedernal y Acero", "Etiquetas", "Monturas", "Discos Musicales", 
     "Bloques", "Minerales", "Gemas", "Lingotes", "Polvo de Redstone", 
-    "Semillas", "Tinturas"
+    "Semillas", "Tinturas", "Mesas de Trabajo", "Huevos de mobs", "Pistolas", "Cofres"
 ];
+
+// RegEx global para permitir solo letras (con acentos/ñ) y números con espacios
+const regexAlphanumeric = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+
+// --- NUEVO: RegEx para bloquear comandos SQL ---
+const sqlInjectionRegex = /\b(DROP|DELETE|TRUNCATE|ALTER|INSERT|UPDATE|SELECT|GRANT|REVOKE|UNION|EXEC|EXECUTE)\b/i;
+
+// Función auxiliar para revisar si un texto contiene comandos SQL
+const contieneComandosSQL = (texto) => {
+    if (!texto) return false;
+    return sqlInjectionRegex.test(texto);
+};
+// ----------------------------------------------
 
 //se da una respuesta a los datos de la lista
 router.get('/categorias', (req, res) => {
@@ -36,7 +49,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// se obtienen cada iteam por su ID, que no es la que pones del minecraft, la de minecraft:noseque_noseuqe, la otra
+// se obtienen cada iteam por su ID
 router.get('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -75,6 +88,29 @@ router.post('/', async (req, res, next) => {
         descripcion = descripcion ? descripcion.trim() : null;
         foto_url = foto_url ? foto_url.trim() : null;
 
+        // --- NUEVA VALIDACIÓN ANTI SQL INJECTION ---
+        if (contieneComandosSQL(nombre) || contieneComandosSQL(tipo_item) || contieneComandosSQL(descripcion) || contieneComandosSQL(minecraft_id)) {
+            return res.status(400).json({ 
+                status: 'error', 
+                message: 'El texto contiene palabras no permitidas por seguridad (Ej: DROP, DELETE, SELECT, etc).' 
+            });
+        }
+        // -------------------------------------------
+
+        // --- VALIDACIONES ALFANUMÉRICAS ---
+        if (!regexAlphanumeric.test(nombre)) {
+            return res.status(400).json({ status: 'error', message: 'El nombre solo puede contener letras, números y espacios.' });
+        }
+
+        if (!regexAlphanumeric.test(tipo_item)) {
+            return res.status(400).json({ status: 'error', message: 'El tipo de ítem solo puede contener letras, números y espacios.' });
+        }
+
+        if (descripcion && !regexAlphanumeric.test(descripcion)) {
+            return res.status(400).json({ status: 'error', message: 'La descripción solo puede contener letras, números y espacios.' });
+        }
+        // -----------------------------------------
+
         if (nombre.length > 100) {
             return res.status(400).json({ status: 'error', message: 'El nombre no puede superar los 100 caracteres.' });
         }
@@ -99,7 +135,6 @@ router.post('/', async (req, res, next) => {
             return res.status(400).json({ status: 'error', message: 'El enlace de la imagen debe ser una URL válida.' });
         }
 
-        //esto de la base de datos
         const query = `
             INSERT INTO minecraft (nombre, categoria, minecraft_id, tipo_item, descripcion, foto_url) 
             VALUES (?, ?, ?, ?, ?, ?)
@@ -136,6 +171,29 @@ router.put('/:id', async (req, res, next) => {
         tipo_item = tipo_item.trim();
         descripcion = descripcion ? descripcion.trim() : null;
         foto_url = foto_url ? foto_url.trim() : null;
+
+        // --- NUEVA VALIDACIÓN ANTI SQL INJECTION ---
+        if (contieneComandosSQL(nombre) || contieneComandosSQL(tipo_item) || contieneComandosSQL(descripcion) || contieneComandosSQL(minecraft_id)) {
+            return res.status(400).json({ 
+                status: 'error', 
+                message: 'El texto contiene palabras no permitidas por seguridad (Ej: DROP, DELETE, SELECT, etc).' 
+            });
+        }
+        // -------------------------------------------
+
+        // --- VALIDACIONES ALFANUMÉRICAS ---
+        if (!regexAlphanumeric.test(nombre)) {
+            return res.status(400).json({ status: 'error', message: 'El nombre solo puede contener letras, números y espacios.' });
+        }
+
+        if (!regexAlphanumeric.test(tipo_item)) {
+            return res.status(400).json({ status: 'error', message: 'El tipo de ítem solo puede contener letras, números y espacios.' });
+        }
+
+        if (descripcion && !regexAlphanumeric.test(descripcion)) {
+            return res.status(400).json({ status: 'error', message: 'La descripción solo puede contener letras, números y espacios.' });
+        }
+        // -----------------------------------------
 
         if (nombre.length > 100) {
             return res.status(400).json({ status: 'error', message: 'El nombre no puede superar los 100 caracteres.' });
