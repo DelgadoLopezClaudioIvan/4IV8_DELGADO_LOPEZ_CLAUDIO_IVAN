@@ -1,0 +1,37 @@
+
+        :root {
+            --bg-principal: rgba(214, 213, 201, 1);
+            --tarjeta-bg: rgba(185, 186, 163, 1);
+            --borde-oscuro: rgba(10, 16, 13, 1);
+            --texto-oscuro: rgba(10, 16, 13, 1);
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Winky Milky', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        html, body {
+            background-color: var(--bg-principal);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+            border: 7px solid var(--borde-oscuro);
+            border-radius: 40px;
+            background-color: var(--tarjeta-bg);
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            color: var(--texto-oscuro);
+        }
+
+        .form-conteiner p {
+            margin-bottom: 2rem;
+            text-align: justify; /* Cambiado a justificado para que el bloque de texto largo se vea ordenado */
+        }

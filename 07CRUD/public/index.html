@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ejemplo de CRUD</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
     <header>
@@ -19,22 +20,22 @@
                     <label for="nombre">Nombre Completo</label>
                     <input type="text" id="nombre" placeholder="Aqui va tu nombre" maxlength="60" required>
                     <span id="error-nombre" class="error"></span>
-            </div>
+                </div>
 
-            <div class="campo">
-                    <label for="nombre">Fecha de Nacimiento</label>
+                <div class="campo">
+                    <label for="fecha_nacimiento">Fecha de Nacimiento</label>
                     <input type="date" id="fecha_nacimiento" required>
                     <span id="error-fecha" class="error"></span>
-            </div>
+                </div>
 
-            <div class="campo">
-                    <label for="nombre">Nota (0-10)</label>
-                    <input type="number" id="nota" placeholder="Por ejemplo 8.5" min="0" max="10" required>
+                <div class="campo">
+                    <label for="nota">Nota (0-10)</label>
+                    <input type="number" id="nota" placeholder="Por ejemplo 8.5" min="0" max="10" step="0.1" required>
                     <span id="error-nota" class="error"></span>
-            </div>
+                </div>
 
-            <button type="submit" id="btn-guardar">Guardar</button>
-            <button type="button" id="btn-cancelar" class="btn-secundario" style="display: none;">Cancelar</button>
+                <button type="submit" id="btn-guardar">Guardar</button>
+                <button type="button" id="btn-cancelar" class="btn-secundario" style="display: none;">Cancelar</button>
             </form>
         </section>
     </main>
@@ -54,8 +55,7 @@
                 </tr>
             </thead>
             <tbody id="tbody-usuarios">
-
-            </tbody>
+                </tbody>
         </table>
     </section>
     <section>

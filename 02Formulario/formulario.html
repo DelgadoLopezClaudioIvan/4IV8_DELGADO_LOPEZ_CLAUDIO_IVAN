@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ejemplo de formulario y su validación</title>
     <script src="./JS/validarformulario.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
     <div class="container">
@@ -15,30 +16,24 @@
             </p>
                 
             <form name="formulario" method="get" id="formulario" onsubmit="return validar(this)">
-                    <label for="nombre">
-                        Nombre:
-                    </label>
-                    <br>
-                    <input type="text" name="nombre" id="nombre" placeholder="Por favor, escriba aquí su nombre">
-                    <br>
+                <label for="nombre">Nombre:</label>
+                <br>
+                <input type="text" name="nombre" id="nombre" placeholder="Por favor, escriba aquí su nombre">
+                <br><br>
 
-                    <label for="edad">
-                        Edad:
-                    </label>
-                    <br>
-                    <input type="number" name="edad" id="edad" placeholder="Por favor, escriba aquí su edad">
-                    <br>
+                <label for="edad">Edad:</label>
+                <br>
+                <input type="number" name="edad" id="edad" placeholder="Por favor, escriba aquí su edad">
+                <br><br>
 
-                    <label for="email">
-                        Email:
-                    </label>
-                    <br>
-                    <input type="email" name="email" id="email" placeholder="Por favor, escriba aquí su correo electronico">
-                    <br>
+                <label for="email">Email:</label>
+                <br>
+                <input type="email" name="email" id="email" placeholder="Por favor, escriba aquí su correo electronico">
+                <br><br>
 
-                    <input type="submit" name="enviar" value="Enviar Registro">
-                    <input type="reset" name="borrar" value="Borrar Datos">
-                </form>
+                <input type="submit" name="enviar" value="Enviar Registro">
+                <input type="reset" name="borrar" value="Borrar Datos">
+            </form>
         </div>
     </div>
     <a href="../index.html">Regresar a la pagina</a>

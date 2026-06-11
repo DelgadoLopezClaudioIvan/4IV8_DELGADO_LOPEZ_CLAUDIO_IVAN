@@ -10,7 +10,7 @@ Se sustituye por las nuevas variables:
 let --> es una variable de tipo "protegida", ya que solo funciona dentro de un fragmento de codigo
 
 const --> si es constante
-
+ya no es constante jsjs
 
 let x = "x";
 if(true){
